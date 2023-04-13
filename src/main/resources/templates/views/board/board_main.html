@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/main_layout}">
+	
+	<main layout:fragment="content" class="container min-vh-75 ">
+		<span th:text="${boardTypeKr}" class="font-bold">게시판</span>
+		
+		
+			<div class="row">
+        <div class="col-md-3">
+            <form th:action="@{/board/{boardType}/main_view(boardType=${boardType})}" method="get" class="mt-20 flex-col">
+        
+	  <div class="funkyradio">				
+	  <div class="funkyradio-primary">
+            <input type="radio" name="radio" id="radio1" value="regDt" th:checked="${radio != 'liked'}"/>
+            <label for="radio1">최신순</label>
+        </div>
+        
+          <div class="funkyradio-primary">
+            <input type="radio" name="radio"  id="radio2" value="liked" th:checked="${radio == 'liked'}" />
+            <label for="radio2">좋아요순</label>
+        </div>
+   
+     
+
+      
+	  </div>		
+					
+		<select class="form-select form-select-lg mb-3 form-control" aria-label=".form-select-lg example" name="order">
+  <option value="asc" th:selected="${order} == 'asc' ">오름차순</option>
+  <option value="desc" th:selected="${order} != 'asc' ">내림차순</option>
+
+</select>
+
+        
+        <div class="flex">
+                    <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
+                    <input class="form-control w-85" id="system-search" name="searchKeyword" placeholder="Search for" th:value="${searchKeyword}" required>
+                    
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                    </span>
+        </div>            
+               
+            </form>
+        </div>
+		<div class="col-md-9">
+			
+			<a th:href="@{/board_write/{boardType}(boardType=${boardType})}" class="flex-row-reverse">
+				  <button type="button" class="btn btn-primary">작성하기</button>
+			</a>
+			
+    	 <table class="table table-list-search">
+                    <thead>
+                        <tr>
+                            <th>게시물 번호</th>
+                            <th>작성자</th>
+                            <th>제목</th>
+                            <th>조회수</th>
+                            <th>추천수</th>
+                            <th>작성일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+						
+						  <tr th:each = "board:${list}">
+                  
+                  
+                    <td th:text="${board.boardNo}">0</td>
+                    <td th:text="${board.user.nickNm}">닉네임</td>
+                    <td >
+                        <a th:text="${board.title}" th:href="@{/board_view/view(boardNo=${board.boardNo})}">제목</a>
+                    </td>
+                   <td th:text="${board.boardHit}">0</td>
+                   <td th:text="${board.totalLikes}">0</td>
+                   <td th:text="${board.regDt}">2000-01-01</td>
+                    
+                </tr>
+						
+						
+                 <!--       <tr>
+                            <td>Sample</td>
+                            <td>Filter</td>
+                            <td>12-11-2011 11:11</td>
+                            <td>OK</td>
+                            <td>123</td>
+                            <td>Do some other</td>
+                        </tr>
+                        <tr>
+                            <td>Try</td>
+                            <td>It</td>
+                            <td>11-20-2013 08:56</td>
+                            <td>It</td>
+                            <td>Works</td>
+                            <td>Do some FILTERME</td>
+                        </tr>
+                        <tr>
+                            <td>§</td>
+                            <td>$</td>
+                            <td>%</td>
+                            <td>&</td>
+                            <td>/</td>
+                            <td>!</td>
+                        </tr>-->
+                    </tbody>
+                </table>   
+                
+                
+                
+                
+           <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+		<a th:if="${page != nowPage and page>0}"
+			th:href="@{/board/{boardType}(boardType=${boardType})/main_view(page = ${page - 1}, searchKeyword = ${searchKeyword})}"
+			th:text="${page}"></a>
+		<strong class="bold" th:if="${page == nowPage}" th:text="${page}"></strong>
+	</th:block>
+                
+		</div>
+	</div>
+		
+		
+		
+	</main>
+	
+	
+</html>

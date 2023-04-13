@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="https://www.thymeleaf.org" xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
+ layout:decorate="~{layout/main_layout}">
+ 
+ <main layout:fragment="content">
+	 <h1>글쓰기</h1>
+	 <div class="container">
+		 <form th:action="@{/board_write/{boardType}/ps(boardType=${boardDto.boardType})}" method="post" th:object="${boardDto}" enctype="multipart/form-data">
+			 <input type="hidden" name="gid" id="gid" th:value="*{gid}">
+
+			
+			<table class="communityT marginAuto">
+			<tr>						
+				<td colspan="4" align="left"><!-- 제목 -->
+						<div class="error" th:each="err : ${#fields.errors('title')}" th:text="${err}"></div>
+					<input class="width100 borderX clkBorderX font2" type="text" name="title" 
+						placeholder="제목을 입력해 주세요" th:field="*{title}">
+					
+				</td>
+			</tr>
+
+			<tr>
+				<th>첨부 파일</th><!-- 파일 -->
+				<td colspan="3" align="left">
+					<input type="file" name="files" id="files" multiple="multiple" th:filed="*{files}" >
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4"> <!-- 내용 -->
+				<div class="error" th:each="err : ${#fields.errors('content')}" th:text="${err}"></div>	
+					<textarea rows="20" id="content" name="content"
+						placeholder="내용을 입력해 주세요" th:field="*{content}">
+					</textarea>
+				
+				</td>
+			</tr>
+		</table>
+		
+		
+			<div>
+				
+			</div>
+			<button type="button" id="cancelBtn">취소</button>
+			<button type="submit">등록</button>
+			
+		 </form>
+		 
+	 </div>
+ </main>
+	
+</html>

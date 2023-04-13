@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<!--<header id="header" th:fragment="header">
+		<span>헤더</span>
+		
+		<th:block>
+			<div class="nav_log">
+				<th:block sec:authorize="isAnonymous()">
+					<a th:href="@{/user/login}" th:text="#{user.login}"></a>
+					<a th:href="@{/user/sign_up}" th:text="#{user.sign}"></a>
+				</th:block>
+				<th:block sec:authorize="isAuthenticated()">
+					<a th:href="@{/logout}" th:text="#{user.logout}"></a>
+					<a th:href="@{/user/mypage}" th:text="#{user.mypage}"></a>
+				</th:block>
+			</div>
+		</th:block>
+
+	</div>
+</header>-->
+<header id="header">
+    <div class="container">
+
+      <div id="logo" class="pull-left">
+        <h1><a href="#intro" class="scrollto">Anything U WANT</a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="#intro"><img src="img/logo.png" alt="" title="" /></a>-->
+      </div>
+
+      <nav id="nav-menu-container">
+        <ul class="nav-menu">
+          <li class="menu-active"><a href="">Home</a></li>
+          <li><a href="">About Us</a></li>
+              <li class="menu-has-children"><a href="">게시판</a>
+            <ul class="pb-2">
+			  <li><a th:href="@{/board/NOTICE/main_view}">공지사항</a></li>
+              <li><a th:href="@{/board/FREE_BOARD/main_view}">자유 게시판</a></li>
+              <li><a th:href="@{/board/LIKED_BOARD/main_view}">추천 게시판</a></li>
+              <li><a th:href="@{/board/QUERY_BOARD/main_view}">질문 게시판</a></li>
+              
+            </ul>
+          </li>
+          
+       
+				<th:block sec:authorize="isAnonymous()">
+				<li><a th:href="@{/user/login}" th:text="#{user.login}"></a></li>
+				<li><a th:href="@{/user/sign_up}" th:text="#{user.sign}"></a></li>
+				</th:block>
+				<th:block sec:authorize="isAuthenticated()">
+					<li><a th:href="@{/logout}" th:text="#{user.logout}"></a></li>
+					<li><a th:href="@{/user/mypage}" th:text="#{user.mypage}"></a></li>
+				</th:block>
+		
+          <!-- <li><a href="">Contact</a></li> -->
+        </ul>
+      </nav><!-- #nav-menu-container -->
+
+    </div>
+  </header><!-- #header -->
+
+
+</html>
