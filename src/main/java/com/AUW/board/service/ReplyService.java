@@ -11,6 +11,7 @@ import com.AUW.board.domain.User;
 import com.AUW.board.domain.board.Board;
 import com.AUW.board.domain.board.Reply;
 import com.AUW.board.dto.ReplyDto;
+import com.AUW.board.repository.BoardRepository;
 import com.AUW.board.repository.ReplyRepository;
 import com.AUW.board.repository.UserRepository;
 
@@ -22,12 +23,63 @@ import lombok.RequiredArgsConstructor;
 public class ReplyService {
 
 	private final ReplyRepository replyRepository;
+	private final BoardRepository boardRepository;
 	
-	public Reply findOneByReplyNo(Long no) {
-		Optional<Reply> _entity = replyRepository.findById(no);
-		Reply entity = _entity.orElse(null);
+	
+	public Reply insertReply(ReplyDto dto,Long boardNo, User user) {
+		
+		Long parentNo = null;
+		if(dto.getParentNo() != null) {
+			parentNo = dto.getParentNo();
+			
+		}
+		Optional<Board> _entity = boardRepository.findById(boardNo);
+		Board board = _entity.orElseThrow(()-> new RuntimeException("게시글을 찾을수없습니다."));
+		
+		Reply entity = Reply.builder()
+				.board(board)
+				.user(user)
+				.content(dto.getContent())
+				.parent(null)
+				.build();
+		entity = replyRepository.save(entity);
 		
 		return entity;
+	}
+	
+	
+
+	
+	
+	
+	
+	
+	
+	public Reply findOneByReplyNo(Long no) {
+		
+		Optional<Reply> _entity = replyRepository.findById(no);
+		Reply entity = _entity.orElseThrow(()->new RuntimeException("댓글을 찾을수없습니다."));
+		
+		return entity;
+	}
+	
+	@Transactional
+	public void deleteReply(Long replyNo) {
+		
+		try {
+		Reply entity = this.findOneByReplyNo(replyNo);
+		
+		entity.setDeleteYn("Y");
+		if(entity.getDeletedContent()==null || !entity.getDeletedContent().isEmpty()) {
+			entity.setDeletedContent(entity.getContent());
+			entity.setContent("삭제된 댓글입니다.");
+		}
+		
+	
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("댓글삭제에러");
+		}
 	}
 	
 	
@@ -35,7 +87,7 @@ public class ReplyService {
 	public boolean updateReply(ReplyDto dto,Long no) {
 		try {
 		Reply entity = this.findOneByReplyNo(no);
-		entity.setCotent(dto.getContent());
+		entity.setContent(dto.getContent());
 		
 		return true;
 		
@@ -75,9 +127,9 @@ public class ReplyService {
 				ReplyDto _children = ReplyDto.builder()
 						.replyNo(_reply.getReplyNo())
 						.boardNo(_reply.getBoard().getBoardNo())
-						.id(_reply.getUser().getUserId())
+						.userId(_reply.getUser().getUserId())
 						.nickNm(_reply.getUser().getNickNm())
-						.content(_reply.getCotent())
+						.content(_reply.getContent())
 						.regDt(_reply.getRegDt())
 						.modDt(_reply.getModDt())
 						.deleteYn(_reply.getDeleteYn())
@@ -93,9 +145,9 @@ public class ReplyService {
 				.replyNo(entity.getReplyNo())
 				.parentNo(parentNo)
 				.boardNo(entity.getBoard().getBoardNo())
-				.id(entity.getUser().getUserId())
+				.userId(entity.getUser().getUserId())
 				.nickNm(entity.getUser().getNickNm())
-				.content(entity.getCotent())
+				.content(entity.getContent())
 				.regDt(entity.getRegDt())
 				.modDt(entity.getModDt())
 				.deleteYn(entity.getDeleteYn())
@@ -122,7 +174,7 @@ public class ReplyService {
 				.board(board)
 				.user(user)
 				.deleteYn(dto.getDeleteYn())
-				.cotent(dto.getContent())
+				.content(dto.getContent())
 				.parent(parent)
 	
 				.build();
@@ -134,32 +186,9 @@ public class ReplyService {
 	/**toDto, toEntity e*/		
 	
 	
+
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-//	public List<ReplyDto> getChildrenDtoList(Reply entity){
-//
-//		List<ReplyDto> list = new ArrayList<>();
-//		if(entity.getChildren() != null && entity.getChildren().size()>0) {
-//			
-//			ReplyDto dto = this.entityToDto(entity);
-//			list.add(dto);
-//			
-//			
-//		}
-//		
-//		return list;
-//	}
-	
+
 	
 	public List<ReplyDto> getReplyDtoList(List<Reply> replies){
 		

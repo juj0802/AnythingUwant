@@ -43,8 +43,7 @@ public class BoardWriteController {
 	
 	@PostMapping("/{boardType}/ps")
 	public String boardWritePs(@Valid BoardDto boardDto,Errors errors,Model model,@PathVariable String boardType,@AuthenticationPrincipal PrincipalDetail principalDetail ) throws IllegalStateException, IOException {
-		System.out.println("dto====="+boardDto);
-		System.out.println("파일은 ==="+boardDto.getFiles());
+	
 		if(errors.hasErrors()) {
 		
 			model.addAttribute("boardDto", boardDto);
@@ -53,9 +52,14 @@ public class BoardWriteController {
 			return "board/board_write";
 		}
 		
-	
+		
 		Board board = boardService.insertBoard(boardDto, principalDetail.getUser());
-	fileService.saveFiles(boardDto.getFiles(),board);
+		if(!boardDto.getFiles().isEmpty() && boardDto.getFiles().size()>0) {
+			for(MultipartFile file : boardDto.getFiles()) {
+				fileService.saveFiles(file, board);
+			}
+		}
+	
 		return "redirect:/board/"+boardDto.getBoardType()+"/main_view";
 	}
 	

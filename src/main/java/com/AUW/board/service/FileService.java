@@ -3,7 +3,9 @@ package com.AUW.board.service;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,10 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.AUW.board.domain.FileEntity;
+import com.AUW.board.domain.QFileEntity;
 import com.AUW.board.domain.board.Board;
 import com.AUW.board.repository.FileRepository;
 import com.querydsl.core.BooleanBuilder;
-import com.test.board.domain.QFileEntity;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,13 +33,9 @@ public class FileService {
 	
 	private final FileRepository fileRepository;
 	
-	public void saveFiles(List<MultipartFile> files,Board board) throws IllegalStateException, IOException {
-		
-		if(files.isEmpty() || files.size()<1) {
-			return;
-		}
-		
-		for(MultipartFile file : files) {
+	public void saveFiles(MultipartFile file,Board board) throws IllegalStateException, IOException {
+			
+		if(file != null && !file.isEmpty()) {
 			
 			String fileName = file.getOriginalFilename();//파일 원래이름추출
 			String _uuid = UUID.randomUUID().toString();//파일 이름으로 쓸 랜덤uuid생성 중복검사는 추후에
@@ -57,9 +56,40 @@ public class FileService {
 			
 			
 		}
+	
+
+		
+			
+			
+		}
+	public FileEntity getFileByNo(Long fileNo) throws FileNotFoundException {
+		
+		Optional<FileEntity> _entity = fileRepository.findById(fileNo);
+		FileEntity entity = _entity.orElseThrow(()-> new FileNotFoundException("파일을 찾을수없습니다."));
+		
+		return entity;
+		
+	}
+	
+	
+	public List<FileEntity> getFilesByBoard(Board board){
+		
+		BooleanBuilder builder = new BooleanBuilder();
+		QFileEntity qfile = QFileEntity.fileEntity;
+		
+		builder.and(qfile.boardNo.eq(board));
+		
+		
+		
+		
+		List<FileEntity> list = (List<FileEntity>) fileRepository.findAll(builder);
+		
+		
+		return list;
+		
+	}
 		
 	
-	}
 	
 	//uuid중복검사 , querydsl 사용
 	public String checkDuplicate(String uuid) {

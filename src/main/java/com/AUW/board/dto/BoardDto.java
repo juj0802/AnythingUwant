@@ -1,6 +1,8 @@
 package com.AUW.board.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,7 @@ public class BoardDto {
 	private String nickNm;
 	@NotBlank
 	private String title;
+	
 	@NotBlank
 	private String content;
 	private String boardType;

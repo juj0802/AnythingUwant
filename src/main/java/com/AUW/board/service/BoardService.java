@@ -1,5 +1,8 @@
 package com.AUW.board.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,12 +11,14 @@ import org.springframework.stereotype.Service;
 import com.AUW.board.domain.User;
 import com.AUW.board.domain.board.Board;
 import com.AUW.board.domain.board.QBoard;
+import com.AUW.board.domain.board.Reply;
 import com.AUW.board.dto.BoardDto;
 import com.AUW.board.dto.BoardType;
 import com.AUW.board.repository.BoardRepository;
 import com.AUW.board.repository.UserRepository;
 import com.querydsl.core.BooleanBuilder;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,7 +29,7 @@ public class BoardService {
 	private final ReplyService replyService;
 	
 	
-	public Page<Board> findAllPosts(String boardType,Pageable pageable){
+	public Page<Board> findAllBoard(String boardType,Pageable pageable){
 		
 		BooleanBuilder builder = new BooleanBuilder();
 		
@@ -39,7 +44,15 @@ public class BoardService {
 		
 		return page;
 	}
-	
+	public Board getOneBoard(Long boardNo) {
+		
+		Optional<Board> _entity = boardRepository.findById(boardNo);
+		Board board = _entity.orElseThrow(()-> new RuntimeException("게시글을 찾을수없습니다."));
+		
+		
+		return board;
+	}
+
 	
 	public Board insertBoard(BoardDto dto,User user) {
 		
@@ -51,7 +64,16 @@ public class BoardService {
 	}
 	
 	
-	
+	@Transactional
+	public void updateReplies(Board board, Reply reply) {
+		
+		List<Reply> list = board.getReplies();
+		list.add(reply);
+		
+		board.setReplies(list);
+		
+		
+	}
 	
 	public String translateBoardTypeKr(String boardType) {
 		

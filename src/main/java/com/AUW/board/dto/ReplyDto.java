@@ -23,7 +23,7 @@ public class ReplyDto {
 	private Long parentNo;//부모 댓글 번호
 	private Long boardNo;//게시글번호
 	
-	private String id;//유저아이디
+	private String userId;//유저아이디
 	private String nickNm;//유저닉네임
 	@NotBlank
 	private String content;//댓글내용

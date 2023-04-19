@@ -3,38 +3,65 @@ window.addEventListener("DOMContentLoaded",function(){
 	CKEDITOR.replace("content");
 	CKEDITOR.config.height=500;
 	
+	const filesEl = document.getElementById("files");
 	
+	filesEl.addEventListener("change",function(e){
+		
+	let list = e.target.files;
+	let fileList = document.getElementById("fileList");
+	fileList.innerHTML=``;
 	
-	
-	
-	
-	
-	
-	//파일 선택 처리
-/*	const filesEl = document.getElementById("files");
-	if(filesEl){
-		filesEl.addEventListener("change",function(e){
+		for(item of list){
+			fileList.innerHTML +=`<div><span>${item.name}</span> <button type="button" onclick=" deleteAttach('${item.name}') ">
+			<span class="material-symbols-outlined">
+backspace
+</span>
+			</button></div>`;
 			
-		const gidEl = document.getElementById("gid");
-			if(!gidEl){return ;}
-			
-			const gid = gidEl.value;
-			filesEl.dataset.gid = gid;
-			const files = e.target.files;
-			fileUpload.process(gid, files);
-			console.log(e.target.files);
-			
-		});
-	}*/
+		}
+		fileList.classList.add("h-auto");
+		
+
+		
+
+		
+	});
 	
 	
-	
-	
-	
-	
+
 	
 });
 
+
+function deleteAttach(itemName){
+
+
+	const filesEl = document.getElementById("files").files;
+		let fileList = document.getElementById("fileList");
+	const dataTranster = new DataTransfer();
+	     Array.from(filesEl)
+                    .filter(file => file.name != itemName)
+                    .forEach(file => {
+                    dataTranster.items.add(file);
+                 });
+            document.querySelector('#files').files = dataTranster.files;
+              
+			fileList.innerHTML=``;
+	
+		for(item of filesEl){
+			fileList.innerHTML +=`<div><span>${item.name}</span> <button type="button" onclick=" deleteAttach('${item.name}') ">
+				<span class="material-symbols-outlined">
+backspace
+</span>
+			 </button></div>`;
+			
+		}
+			if(filesEl.length==0){
+				fileList.classList.remove("h-auto");
+			}
+
+
+}
 
 
 const fileUpload = {

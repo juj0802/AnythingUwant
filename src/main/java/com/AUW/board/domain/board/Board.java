@@ -4,6 +4,9 @@ package com.AUW.board.domain.board;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
 import com.AUW.board.domain.BaseEntity;
 import com.AUW.board.domain.FileEntity;
 import com.AUW.board.domain.User;
@@ -34,6 +37,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@DynamicInsert
 public class Board extends BaseEntity{//게시판 엔티티
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,14 +57,17 @@ public class Board extends BaseEntity{//게시판 엔티티
 	@Column(nullable=false, updatable = false)
 	private String gid;//파일 그룹id
 	
-	@Column(columnDefinition = "int default '0'",insertable = false, updatable = false)
-	private Integer boardHit;//조회수
+//	@Column(columnDefinition = "int default '0'")
+	//,insertable = false, updatable = false
+	@ColumnDefault("0")
+	private Integer boardHit = 0;//조회수
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable=false)
 	private BoardType boardType;
 	
-	@OrderBy("regDt desc")
+	@ToString.Exclude
+	@OrderBy("regDt asc")
 	@OneToMany(mappedBy = "board", orphanRemoval = true)
 	private List<Reply> replies = new ArrayList<>();//댓글 연관관계
 	
@@ -68,8 +75,9 @@ public class Board extends BaseEntity{//게시판 엔티티
 //	@OneToMany(mappedBy = "board", orphanRemoval = true)
 //	private List<FileEntity> files = new ArrayList<>();
 	
-	@Column(columnDefinition = "int default '0'")
-	private Integer totalLikes;//총 추천수
+	//@Column(columnDefinition = "int default '0'")
+	@ColumnDefault("0")
+	private Integer totalLikes = 0;//총 추천수
 	
 	
 	

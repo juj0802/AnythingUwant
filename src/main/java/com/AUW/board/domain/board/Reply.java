@@ -38,12 +38,14 @@ public class Reply extends BaseEntity{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="userNo")
-	private User user;
+	private User user; //댓글 작성자
 	@Column(nullable=false, columnDefinition="char(1) default 'N'", insertable=false)
-	private String deleteYn; 	
+	private String deleteYn; 	//삭제여부
 	@Lob
 	@Column(nullable=false)
-	private String cotent;
+	private String content; // 댓글내용
+	@Lob
+	private String deletedContent;  //삭제된 댓글의 원본
 	
 	@ManyToOne(fetch= FetchType.LAZY)
 	@JoinColumn(name="parent_No")

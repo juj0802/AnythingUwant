@@ -2,14 +2,21 @@ package com.AUW.board.repository;
 
 
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.AUW.board.domain.FileEntity;
+import com.AUW.board.domain.board.Board;
 
 
 
 public interface FileRepository extends JpaRepository<FileEntity, Long>, QuerydslPredicateExecutor<FileEntity>{
+	
+	
+	
+	
 //
 //	@Modifying
 //	FileEntity save(@Param("fileEntity") FileEntity fileEntity);

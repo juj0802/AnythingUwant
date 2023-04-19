@@ -3,36 +3,48 @@
  layout:decorate="~{layout/main_layout}">
  
  <main layout:fragment="content">
-	 <h1>글쓰기</h1>
-	 <div class="container">
+
+	 <div class="container mb-3">
+		  <h1>글 작성</h1>
+		 <div class="card box-shadow">
 		 <form th:action="@{/board_write/{boardType}/ps(boardType=${boardDto.boardType})}" method="post" th:object="${boardDto}" enctype="multipart/form-data">
 			 <input type="hidden" name="gid" id="gid" th:value="*{gid}">
 
+		
+			<table class="m-auto w-full">
 			
-			<table class="communityT marginAuto">
 			<tr>						
-				<td colspan="4" align="left"><!-- 제목 -->
+				<td colspan="4" align="left">
+						
+					<input class="w-full form-control" type="text" name="title" placeholder="제목을 입력해 주세요" th:field="*{title}">
 						<div class="error" th:each="err : ${#fields.errors('title')}" th:text="${err}"></div>
-					<input class="width100 borderX clkBorderX font2" type="text" name="title" 
-						placeholder="제목을 입력해 주세요" th:field="*{title}">
-					
 				</td>
 			</tr>
-
-			<tr>
-				<th>첨부 파일</th><!-- 파일 -->
+		
+			<tr class="file p-2">
+				
+				<th class="text-center w-20">첨부 파일</th>
 				<td colspan="3" align="left">
-					<input type="file" name="files" id="files" multiple="multiple" th:filed="*{files}" >
+					<label for="files" class="w-full p-2 m-0 flex justify-center">
+						<span class="material-symbols-outlined">drive_folder_upload</span> &nbsp;&nbsp;파일선택 &nbsp;(첨부파일을 삭제할려면 x버튼을 두번 클릭해주세요)</label>
+					<input type="file" name="files" class="hidden" id="files" multiple="multiple" th:filed="*{files}" >
+		<div id="fileList" class="form-control">
+						
+						</div>
 				</td>
+				
 			</tr>
 			<tr>
-				<td colspan="4"> <!-- 내용 -->
-				<div class="error" th:each="err : ${#fields.errors('content')}" th:text="${err}"></div>	
-					<textarea rows="20" id="content" name="content"
+			
+				<td colspan="4"> 
+			
+					
+					<textarea rows="20" id="content" name="content" 
 						placeholder="내용을 입력해 주세요" th:field="*{content}">
 					</textarea>
-				
+				<div class="error " th:each="err : ${#fields.errors('content')}" th:text="${err}"></div>
 				</td>
+				
 			</tr>
 		</table>
 		
@@ -40,12 +52,68 @@
 			<div>
 				
 			</div>
-			<button type="button" id="cancelBtn">취소</button>
-			<button type="submit">등록</button>
 			
+			<div class="flex justify-center">
+			<button class="btn btn-primary btn-outline w-50 p-2" type="submit">등록</button>
+			<button class="btn btn-default btn-outline w-50 p-2" type="button" id="cancelBtn">취소</button>
+			</div>
 		 </form>
-		 
+		 </div>
 	 </div>
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+<!--	 
+	 
+	 
+<div class="card box-shadow">
+		          
+
+		            <div class="pricing-color card-header" >
+ 					
+					<form th:action="@{/board_write/{boardType}/ps(boardType=${boardDto.boardType})}" method="post" th:object="${boardDto}" enctype="multipart/form-data">
+						 <input type="hidden" name="gid" id="gid" th:value="*{gid}">
+						<div class="error" th:each="err : *{#fields.errors('title')}" th:text="${err}"></div>
+					<input type="text" name="title" placeholder="제목을 입력해 주세요" th:field="*{title}">
+
+
+		            </div>
+		            
+		            <div class="card-body">
+					
+					<div class="error" th:each=" err : ${#fields.errors('content')}" th:text="${err}" ></div>
+					
+					<textarea rows="20" th:filed="*{content}" id="content" name="content"></textarea>	
+					
+		            </div>
+		            
+				
+						<input type="file" name="files" id="files" multiple="multiple" th:filed="*{files}" class="file p-2">
+						 <div> 
+					 <button type="button" id="cancelBtn">취소</button>
+					<button type="submit">등록</button>
+					  	</div>
+					  </form>
+</div>
+	
+	 -->
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
  </main>
 	
 </html>

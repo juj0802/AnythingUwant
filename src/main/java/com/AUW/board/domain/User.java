@@ -35,7 +35,7 @@ public class User extends BaseEntity{
 	@Column(length=30, nullable=false)
 	private String userNm; // 사용자이름
 	@Column(unique = true,length = 30, nullable = false)
-	private String nickNm;
+	private String nickNm; //닉네임
 	@Column(length=6, nullable=false)
 	private String birthDay; // 생일
 	@Column(unique = true,length = 60, nullable = false)

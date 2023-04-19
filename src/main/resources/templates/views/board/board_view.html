@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/main_layout}">
+	
+	<main layout:fragment="content">
+		
+		
+		<div class="container min-vh-75" th:object="${board}">
+			<input type="hidden" id="boardNo" th:value="*{boardNo}">
+			
+
+		<div class="card box-shadow">
+		          
+
+		            <div class="pricing-color card-header" >
+ 					 <h4 class="card-title pricing-card-title text-center title" th:text="${board.Title}"></h4>
+					
+					
+					
+					<div class="flex p-2  justify-space-between">	
+						
+						<div class="gap p-2">
+						<a class="mr-1" href="#" th:text="|닉네임 : *{user.nickNm}|"></a>
+						<span th:text="|작성일 : *{#temporals.format(regDt, 'yyyy-MM-dd HH:mm')}|"></span>
+						</div>						
+						
+						<div class="gap p-2">
+							<span class="mr-1" th:text="|조회수 : *{boardHit}|"></span>
+							<span th:text="|추천수 : *{totalLikes}|"></span>
+						</div>
+						
+						
+					</div>
+						
+						
+					
+
+		            </div>
+		            <div class="card-body">
+						<span th:utext="*{content}" class="p-2"></span>
+						
+
+		            </div>
+		            
+		             	<div th:if="${fileList}" th:each=" file : ${fileList} " class="file p-2">
+				
+						<a th:href="@{/board/attach(fileNo=${file.fileNo})}" th:id="${file.fileName}" th:text="${file.fileName}" onclick="return ask(this);" class="p-2"></a>
+						  
+					  </div>
+					  
+		          </div>
+		          
+			      
+						<th:block sec:authorize="isAuthenticated()">
+							 <input type="hidden" id="userId" th:value="${user}">
+							<textarea rows="3" placeholder="댓글을 남겨보세요" name="content" id="mainContent" th:field="${replyDto.Content}"></textarea>
+							<button type="button" onclick="replySubmit()">등록</button>
+						</th:block>
+					  <th:block sec:authorize="isAnonymous()">
+							<textarea rows="2" placeholder="댓글 작성은 로그인 후 이용 가능합니다"></textarea>
+						</th:block>
+						
+						  <div id="replies_area">
+							  
+						<div th:if="${replies}" th:each=" reply : ${replies}">
+							<th:blcok th:if="${reply.parent==null}">
+							<a href="#" th:text="${reply.user.nickNm}"></a>
+	
+							<span th:text="${reply.content}"></span>
+							<th:block sec:authorize="isAuthenticated()">
+							<span th:text=" ${#temporals.format(reply.regDt,'yyyy-MM-dd HH:mm')}  "></span>
+								<button type="button">답글</button>
+							<div th:if="${reply.user.userId}==${replyDto.userId}">
+								
+								<button type="button">수정</button>
+								<button type="button" th:value="${reply.content}" th:id="${reply.replyNo}" name="replyNo" onclick="deleteReply(this)">삭제</button>
+								
+							</div>
+		
+							</th:block>
+							
+							
+							
+							
+							<div th:if="${!#lists.isEmpty(reply.children)}" th:each="child : ${reply.children}">
+									<a href="#" th:text="${child.user.nickNm}"></a>
+	
+							<span th:text="${child.content}"></span>
+							<th:block sec:authorize="isAuthenticated()">
+							<span th:text=" ${#temporals.format(child.regDt,'yyyy-MM-dd HH:mm')}  "></span>
+								
+							<div th:if="${child.user.userId}==${replyDto.userId}">
+								
+								<button type="button">수정</button>
+								<button type="button" th:value="${child.content}" th:id="${child.replyNo}" name="replyNo" onclick="deleteReply(this)">삭제</button>
+								
+							</div>
+		
+							</th:block>
+								
+								
+							</div>
+							
+							
+							
+							
+							
+							
+							
+							</th:blcok>
+						</div>
+						
+						
+				  </div>
+
+		
+			</div>
+		
+	</main>
+	
+	
+</html>
