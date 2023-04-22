@@ -36,7 +36,7 @@
 					
 
 		            </div>
-		            <div class="card-body">
+		            <div class="card-body" >
 						<span th:utext="*{content}" class="p-2"></span>
 						
 
@@ -53,54 +53,76 @@
 			      
 						<th:block sec:authorize="isAuthenticated()">
 							 <input type="hidden" id="userId" th:value="${user}">
-							<textarea rows="3" placeholder="댓글을 남겨보세요" name="content" id="mainContent" th:field="${replyDto.Content}"></textarea>
-							<button type="button" onclick="replySubmit()">등록</button>
+							<!-- <span id="parent"></span>-->
+									<div class="reply-card" >
+										<div class="flex">
+							<textarea rows="3" class="form-control w-85" placeholder="댓글을 남겨보세요" name="content" id="mainContent" th:field="${replyDto.Content}"></textarea>
+							<button class="btn btn-primary btn-outline w-15" type="button" onclick="replySubmit()">등록</button>
+										</div>
 						</th:block>
 					  <th:block sec:authorize="isAnonymous()">
-							<textarea rows="2" placeholder="댓글 작성은 로그인 후 이용 가능합니다"></textarea>
+							<textarea rows="3" class="form-control" placeholder="댓글 작성은 로그인 후 이용 가능합니다"></textarea>
 						</th:block>
-						
-						  <div id="replies_area">
+									</div>
+						  <div id="replies_area" class="card">
 							  
-						<div th:if="${replies}" th:each=" reply : ${replies}">
+						<th:block th:if="${replies}" th:each=" reply : ${replies}" >
+							
 							<th:blcok th:if="${reply.parent==null}">
-							<a href="#" th:text="${reply.user.nickNm}"></a>
-	
-							<span th:text="${reply.content}"></span>
-							<th:block sec:authorize="isAuthenticated()">
-							<span th:text=" ${#temporals.format(reply.regDt,'yyyy-MM-dd HH:mm')}  "></span>
-								<button type="button">답글</button>
-							<div th:if="${reply.user.userId}==${replyDto.userId}">
-								
-								<button type="button">수정</button>
-								<button type="button" th:value="${reply.content}" th:id="${reply.replyNo}" name="replyNo" onclick="deleteReply(this)">삭제</button>
-								
+							<div class="card-header bg-light">
+							<a href="#" class="media-heading titleC" th:text="${reply.user.nickNm}"></a>
 							</div>
+							<div class="reply-card-body">
+							<span th:text="${reply.content}" ></span>
+							<th:block sec:authorize="isAuthenticated()">
+								<div class="flex mt-1 reply-content font-small">
+									
+							<span th:if="${reply.modDt==null}" class="p-2" th:text="|작성됨 :  ${#temporals.format(reply.regDt,'yyyy-MM-dd HH:mm')} |" ></span>
+							
+							<span th:unless="${reply.modDt==null}" class="p-2" th:text="|  ${#temporals.format(reply.modDt,'yyyy-MM-dd HH:mm')} |"></span>
+								<button type="button" name="parentReply" th:value="${reply.replyNo}" onclick="newArea(this)" class="btn btn-success font-small">답글</button>
+								
+							<th:block th:if="${reply.user.userId}==${replyDto.userId}">
+								
+								<button type="button" th:id="${reply.replyNo}" th:value="${reply.content}" class="btn btn-default font-small" >수정</button>
+								<button type="button" th:value="${reply.content}" th:id="${reply.replyNo}" name="replyNo" onclick="deleteReply(this)" class="btn btn-labeled btn-danger font-small">삭제</button>
+								
+							</th:block>
+								</div>
+							<div th:id="|${reply.replyNo},${user}|">
+								
+								</div>
+							</th:block>
+							</div>
+							
+							
+							
+							<div th:if="${!#lists.isEmpty(reply.children)}" th:each="child : ${reply.children}" class="child-reply">
+									<div class="card-header relative">
+										<i class="fa-solid fa-turn-up fa-flip-horizontal"></i>
+									<a href="#" class="media-heading titleC" th:text="${child.user.nickNm}"></a>
+									</div>
+									
+										<div class="reply-card-body">
+							 <span th:text="${child.content}" ></span>
+								<div class="flex mt-1 reply-content font-small">
+							
+							<span th:if="${child.modDt ==null}" class="p-2" th:text="|작성됨 :  ${#temporals.format(child.regDt,'yyyy-MM-dd HH:mm')}  |"></span>
+							<span th:unless="${child.modDt ==null}" class="p-2" th:text="| ${#temporals.format(child.modDt,'yyyy-MM-dd HH:mm')} |"></span>
+							
+								<th:block sec:authorize="isAuthenticated()">
+							<th:block th:if="${child.user.userId}==${replyDto.userId}">
+								
+								<button type="button" class="btn btn-default font-small">수정</button>
+								<button type="button" th:value="${child.content}" th:id="${child.replyNo}" name="replyNo" onclick="deleteReply(this)" class="btn btn-labeled btn-danger font-small" >삭제</button>
+								
+							</th:block>
 		
 							</th:block>
-							
-							
-							
-							
-							<div th:if="${!#lists.isEmpty(reply.children)}" th:each="child : ${reply.children}">
-									<a href="#" th:text="${child.user.nickNm}"></a>
-	
-							<span th:text="${child.content}"></span>
-							<th:block sec:authorize="isAuthenticated()">
-							<span th:text=" ${#temporals.format(child.regDt,'yyyy-MM-dd HH:mm')}  "></span>
-								
-							<div th:if="${child.user.userId}==${replyDto.userId}">
-								
-								<button type="button">수정</button>
-								<button type="button" th:value="${child.content}" th:id="${child.replyNo}" name="replyNo" onclick="deleteReply(this)">삭제</button>
+								</div>
 								
 							</div>
-		
-							</th:block>
-								
-								
-							</div>
-							
+										</div>
 							
 							
 							
@@ -108,12 +130,13 @@
 							
 							
 							</th:blcok>
-						</div>
+						</th:block>
 						
 						
-				  </div>
+				  </th>
 
 		
+			</div>
 			</div>
 		
 	</main>

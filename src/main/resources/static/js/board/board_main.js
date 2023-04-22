@@ -1,47 +1,72 @@
- // Smooth scroll for the menu and links with .scrollto classes
-  
-  
-  
-  
-/*  $('.nav-menu a, #mobile-nav a, .scrollto').on('click', function() {
-    if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
-      var target = $(this.hash);
-      if (target.length) {
-        var top_space = 0;
 
-        if ($('#header').length) {
-          top_space = $('#header').outerHeight();
-
-          if( ! $('#header').hasClass('header-fixed') ) {
-            top_space = top_space - 20;
-          }
-        }
-
-        $('html, body').animate({
-          scrollTop: target.offset().top - top_space
-        }, 1500, 'easeInOutExpo');
-
-        if ($(this).parents('.nav-menu').length) {
-          $('.nav-menu .menu-active').removeClass('menu-active');
-          $(this).closest('li').addClass('menu-active');
-        }
-
-        if ($('body').hasClass('mobile-nav-active')) {
-          $('body').removeClass('mobile-nav-active');
-          $('#mobile-nav-toggle i').toggleClass('fa-times fa-bars');
-          $('#mobile-body-overly').fadeOut();
-        }
-        return false;
-      }
-    }
-  });*/
+ function newArea(e){
+	 
+	
+	  const userId = document.getElementById("userId").value;
+	   
+	 
+		const parentNo = e.value; //부모댓글 번호
+		const area = `${parentNo},${userId}`; 
+		let parentReply = document.getElementById(area); 
+		let childReply = document.getElementById("childReply");  //childReply라는 아이디를 가진 엘리먼트가있는지 확인
+			if(!childReply){ //존재하지않는다면 새로운 div만든다
+				childReply = document.createElement("div");
+				childReply.id = "childReply";
+			} 
+		 
+		   	if(childReply.innerHTML){ // 엘리먼트 초기화
+				childReply.innerHTML="";
+			}	
+			
+			childReply.innerHTML=`
+					<div class='flex'>
+				<textarea class='form-control w-85' rows="3" placeholder="답글을 남겨보세요" id="childContent"></textarea>
+				<button class='btn btn-primary btn-outline w-15' type="button" value=${parentNo} onclick="childSubmit(this)">등록</button>
+					</div>
+			`;//대댓글 영역으로 활용
+			
+			parentReply.append(childReply);//부모 영역안에 자식으로 삽입
+ }
+ 
   
+function childSubmit(parent){
+	const parentNo = parent.value; //부모댓글 번호
+	const userId = document.getElementById("userId").value; //유저 아이디
+	const childContent = document.getElementById("childContent").value; // 댓글 내용
 
+	if(childContent.trim()===""){
+		 alert("내용을 입력해주세요");
+		  return;
+	};
+	 const boardNo = document.getElementById("boardNo").value; //게시판 번호
+	 const formData = new FormData(); //formdata 객체를 생성후 request보낸다
+	  formData.append("userId",userId);
+	  formData.append("content",childContent);
+	  formData.append("boardNo",boardNo);
+	  formData.append("parentNo",parentNo);
+	
+		
+ 	  let url = `/reply/submit`;
+	  const xhr = new XMLHttpRequest();
+	  xhr.open("POST",url,true);
+	  xhr.send(formData);
+	  
+	  xhr.onreadystatechange = function(){
+		if(xhr.status == 200 && xhr.readyState == XMLHttpRequest.DONE){
+			$("#replies_area").replaceWith(xhr.responseText);
+			
+			 
+			
+		}  
+	  };
+	  xhr.onerror = function(err){
+		  console.log(err);
+	  };
+	
+}
   
-  function replySubmit(parent){ //비동기로 댓글 요청 
-	  if(parent){
-		  const parentNo = parent.value;
-	  }
+  function replySubmit(){ //비동기로 댓글 요청 
+	
 	  const userId = document.getElementById("userId").value; //유저 아이디
 	
 	  const content = document.getElementById("mainContent").value; //댓글내용
@@ -65,6 +90,7 @@
 		if(xhr.status == 200 && xhr.readyState == XMLHttpRequest.DONE){
 			$("#replies_area").replaceWith(xhr.responseText);
 			document.getElementById("mainContent").value = "";
+			
 			
 		}  
 	  };
@@ -119,19 +145,6 @@
 	  }
 	  
 
-
- /*   $.ajax({
-        url: _url,
-        data: formData,
-        type: "POST",
-    }).done(function (fragment) {
-        $("#replies_area").replaceWith(fragment);
-    })
-    .fail(function (error){
-		
-		console.log(error);
-	})
-    ;*/
 
 	  
 	  

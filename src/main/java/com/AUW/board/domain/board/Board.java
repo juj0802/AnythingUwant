@@ -66,7 +66,7 @@ public class Board extends BaseEntity{//게시판 엔티티
 	@Column(nullable=false)
 	private BoardType boardType;
 	
-	@ToString.Exclude
+	
 	@OrderBy("regDt asc")
 	@OneToMany(mappedBy = "board", orphanRemoval = true)
 	private List<Reply> replies = new ArrayList<>();//댓글 연관관계

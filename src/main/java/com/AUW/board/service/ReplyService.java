@@ -27,24 +27,38 @@ public class ReplyService {
 	
 	
 	public Reply insertReply(ReplyDto dto,Long boardNo, User user) {
-		
-		Long parentNo = null;
-		if(dto.getParentNo() != null) {
-			parentNo = dto.getParentNo();
-			
-		}
+		Reply parent = null;
 		Optional<Board> _entity = boardRepository.findById(boardNo);
 		Board board = _entity.orElseThrow(()-> new RuntimeException("게시글을 찾을수없습니다."));
+		
+		if(dto.getParentNo()!=null) {
+			parent = this.findOneByReplyNo(dto.getParentNo());
+			
+		}
 		
 		Reply entity = Reply.builder()
 				.board(board)
 				.user(user)
+				.parent(parent)
 				.content(dto.getContent())
-				.parent(null)
 				.build();
 		entity = replyRepository.save(entity);
-		
+		if(entity.getParent()!=null) {
+	//		this.updateChildren(parent, entity);
+		}
 		return entity;
+	}
+	
+	@Transactional
+	public void updateChildren(Reply parent,Reply child) {
+		
+		
+		
+		 parent.getChildren().add(child);
+		
+	
+		
+		
 	}
 	
 	
@@ -95,21 +109,7 @@ public class ReplyService {
 			return false;
 		}
 	}
-	@Transactional
-	public boolean updateParent(Reply parent,Long no) {
-		
-		try {
-			Reply entity = this.findOneByReplyNo(no);
-			entity.setParent(parent);
-			
-			return true;
-			
-			}catch (Exception e) {
-				return false;
-			}
-		
-	}
-	
+
 	
 /**toDto, toEntity s*/	
 	public ReplyDto entityToDto(Reply entity) {

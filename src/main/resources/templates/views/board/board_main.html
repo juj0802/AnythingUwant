@@ -70,6 +70,7 @@
                     <td th:text="${board.user.nickNm}"></td>
                     <td >
                         <a th:text="${board.title}" th:href="@{/board/board_view(boardNo=${board.boardNo})}"></a>
+                        <span th:if="${board.replies != null && board.replies.size() != 0}" th:text="${' ['+board.replies.size()+']'}"></span>
                     </td>
                    <td th:text="${board.boardHit}"></td>
                    <td th:text="${board.totalLikes}"></td>

@@ -31,7 +31,7 @@ public class Reply extends BaseEntity{
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long replyNo; //PK
-	
+	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="boardNo")
 	private Board board;
@@ -46,13 +46,12 @@ public class Reply extends BaseEntity{
 	private String content; // 댓글내용
 	@Lob
 	private String deletedContent;  //삭제된 댓글의 원본
-	
+	@ToString.Exclude
 	@ManyToOne(fetch= FetchType.LAZY)
 	@JoinColumn(name="parent_No")
 	private Reply parent; //부모댓글 셀프조인
 	
 	@OneToMany(mappedBy = "parent",orphanRemoval = true)
-	@Builder.Default
 	private List<Reply> children = new ArrayList<>(); //자식 댓글
 	
 	

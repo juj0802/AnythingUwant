@@ -35,8 +35,10 @@ public class ReplyCotroller {
 		
 		
 		Reply reply = replyService.insertReply(replyDto, replyDto.getBoardNo(), user); //replyEntity 생성
+		
+	
 		Board board = boardService.getOneBoard(replyDto.getBoardNo());
-
+		model.addAttribute("user", user.getUserId());
 		model.addAttribute("replies", board.getReplies());
 	
 		
@@ -51,13 +53,8 @@ public class ReplyCotroller {
 		replyService.deleteReply(replyDto.getReplyNo());
 		Board board = boardService.getOneBoard(replyDto.getBoardNo());
 	
-		
-		for(Reply item : board.getReplies()) {
-			System.out.println("테스트");
-			System.out.println(item.getChildren());
-			System.out.println(item.getChildren().size());
-			System.out.println(item.getChildren()==null);
-		}
+		User user = userService.findOneByUserId(replyDto.getUserId());
+		model.addAttribute("user", user.getUserId());
 		model.addAttribute("replies", board.getReplies());
 		
 		return "board/board_view::#replies_area";
