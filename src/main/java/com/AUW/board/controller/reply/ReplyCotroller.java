@@ -59,6 +59,20 @@ public class ReplyCotroller {
 		
 		return "board/board_view::#replies_area";
 	}
+	
+	@PostMapping("/updateReply")
+	public String updateReply(ReplyDto replyDto,Model model) {
+		
+		replyService.updateReply(replyDto, replyDto.getReplyNo());
+		
+		Board board = boardService.getOneBoard(replyDto.getBoardNo());
+		
+		User user = userService.findOneByUserId(replyDto.getUserId());
+		model.addAttribute("user", user.getUserId());
+		model.addAttribute("replies", board.getReplies());
+		
+		return "board/board_view::#replies_area";
+	}
 
 
 

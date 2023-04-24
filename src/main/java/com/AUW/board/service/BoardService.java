@@ -130,11 +130,11 @@ public class BoardService {
 				.nickNm(entity.getUser().getNickNm())
 				.title(entity.getTitle())
 				.content(entity.getContent())
-				.gid(entity.getGid())
+				
 				.regDt(entity.getRegDt())
 				.modDt(entity.getModDt())
 				.boardHit(entity.getBoardHit())
-				.replies(replyService.getReplyDtoList(entity.getReplies()))
+				
 				.totalLikes(entity.getTotalLikes())
 				.build();
 				
@@ -148,7 +148,7 @@ public class BoardService {
 				.title(dto.getTitle())
 				.content(dto.getContent())
 				.boardType(this.translateBoardType(dto.getBoardType()))
-				.gid(dto.getGid())
+		
 				
 				.build();
 		

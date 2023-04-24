@@ -13,6 +13,7 @@ import com.AUW.board.domain.User;
 import com.AUW.board.dto.BoardType;
 import com.AUW.board.dto.UserType;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -54,9 +55,9 @@ public class Board extends BaseEntity{//게시판 엔티티
 	@Column(nullable=false)
 	private String content; //내용
 	
-	@Column(nullable=false, updatable = false)
-	private String gid;//파일 그룹id
-	
+	/*
+	 * @Column(nullable=false, updatable = false) private String gid;//파일 그룹id
+	 */	
 //	@Column(columnDefinition = "int default '0'")
 	//,insertable = false, updatable = false
 	@ColumnDefault("0")
@@ -71,9 +72,9 @@ public class Board extends BaseEntity{//게시판 엔티티
 	@OneToMany(mappedBy = "board", orphanRemoval = true)
 	private List<Reply> replies = new ArrayList<>();//댓글 연관관계
 	
-//	@OrderBy("regDt desc")
-//	@OneToMany(mappedBy = "board", orphanRemoval = true)
-//	private List<FileEntity> files = new ArrayList<>();
+	@OrderBy("regDt desc")
+	@OneToMany(mappedBy = "board", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	private List<FileEntity> files = new ArrayList<>();
 	
 	//@Column(columnDefinition = "int default '0'")
 	@ColumnDefault("0")

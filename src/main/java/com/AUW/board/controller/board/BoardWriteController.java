@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.AUW.board.config.auth.PrincipalDetail;
+import com.AUW.board.domain.User;
 import com.AUW.board.domain.board.Board;
 import com.AUW.board.dto.BoardDto;
 import com.AUW.board.dto.BoardType;
@@ -61,6 +62,22 @@ public class BoardWriteController {
 		}
 	
 		return "redirect:/board/"+boardDto.getBoardType()+"/main_view";
+	}
+	
+	//게시물 수정 매핑
+	@GetMapping("update/{no}")
+	public String updateBoard(@PathVariable Long no,Model model,@AuthenticationPrincipal PrincipalDetail principalDetail) {
+	
+		User user = principalDetail.getUser();
+		Board board = boardService.getOneBoard(no);
+		
+		if(user != board.getUser()) {
+			throw new RuntimeException("유효하지못한 접근입니다.");
+		}
+		
+		
+		
+		return "board/board_write";
 	}
 	
 	

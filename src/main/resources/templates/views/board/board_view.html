@@ -52,16 +52,26 @@
 		          
 			      
 						<th:block sec:authorize="isAuthenticated()">
+							<div th:if="${board.user.userId}==${user}" class="flex w-75 m-auto justify-center">
+								<button type="button" th:value="${board.boardNo}" class="btn btn-default w-50" onclick=" moveToWrite(this) ">수정</button>
+								<button type="button" th:value="${board.boardNo}" class="btn btn-labeled btn-danger w-50">삭제</button>
+							</div>
+							
+							
 							 <input type="hidden" id="userId" th:value="${user}">
 							<!-- <span id="parent"></span>-->
 									<div class="reply-card" >
 										<div class="flex">
-							<textarea rows="3" class="form-control w-85" placeholder="댓글을 남겨보세요" name="content" id="mainContent" th:field="${replyDto.Content}"></textarea>
-							<button class="btn btn-primary btn-outline w-15" type="button" onclick="replySubmit()">등록</button>
+							<textarea rows="3" class="form-control w-85 border-radius-none" placeholder="댓글을 남겨보세요" name="content" id="mainContent" th:field="${replyDto.Content}"></textarea>
+							<button class="btn btn-primary btn-outline w-15 border-radius-none" type="button" onclick="replySubmit()">등록</button>
 										</div>
 						</th:block>
 					  <th:block sec:authorize="isAnonymous()">
-							<textarea rows="3" class="form-control" placeholder="댓글 작성은 로그인 후 이용 가능합니다"></textarea>
+						  	<div class="reply-card">
+					
+							<textarea rows="3" class="form-control " placeholder="댓글 작성은 로그인 후 이용 가능합니다"></textarea>
+							
+							</div>
 						</th:block>
 									</div>
 						  <div id="replies_area" class="card">
@@ -74,25 +84,29 @@
 							</div>
 							<div class="reply-card-body">
 							<span th:text="${reply.content}" ></span>
-							<th:block sec:authorize="isAuthenticated()">
 								<div class="flex mt-1 reply-content font-small">
-									
+						
 							<span th:if="${reply.modDt==null}" class="p-2" th:text="|작성됨 :  ${#temporals.format(reply.regDt,'yyyy-MM-dd HH:mm')} |" ></span>
 							
 							<span th:unless="${reply.modDt==null}" class="p-2" th:text="|  ${#temporals.format(reply.modDt,'yyyy-MM-dd HH:mm')} |"></span>
+							<th:block sec:authorize="isAuthenticated()">
+								
+									
+						
 								<button type="button" name="parentReply" th:value="${reply.replyNo}" onclick="newArea(this)" class="btn btn-success font-small">답글</button>
 								
 							<th:block th:if="${reply.user.userId}==${replyDto.userId}">
 								
-								<button type="button" th:id="${reply.replyNo}" th:value="${reply.content}" class="btn btn-default font-small" >수정</button>
+								<button type="button" th:id="${reply.replyNo}" th:value="${reply.content}" class="btn btn-default font-small" onclick="updateArea(this)">수정</button>
 								<button type="button" th:value="${reply.content}" th:id="${reply.replyNo}" name="replyNo" onclick="deleteReply(this)" class="btn btn-labeled btn-danger font-small">삭제</button>
 								
 							</th:block>
-								</div>
+								
 							<div th:id="|${reply.replyNo},${user}|">
 								
 								</div>
 							</th:block>
+								</div>
 							</div>
 							
 							
@@ -113,14 +127,16 @@
 								<th:block sec:authorize="isAuthenticated()">
 							<th:block th:if="${child.user.userId}==${replyDto.userId}">
 								
-								<button type="button" class="btn btn-default font-small">수정</button>
+								<button type="button" th:id="${child.replyNo}" th:value="${child.content}" class="btn btn-default font-small" onclick="updateArea(this)">수정</button>
 								<button type="button" th:value="${child.content}" th:id="${child.replyNo}" name="replyNo" onclick="deleteReply(this)" class="btn btn-labeled btn-danger font-small" >삭제</button>
 								
 							</th:block>
 		
 							</th:block>
 								</div>
+									<div th:id="|${child.replyNo},${user}|">
 								
+									</div>
 							</div>
 										</div>
 							

@@ -5,6 +5,7 @@ import com.AUW.board.dto.UserType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Builder
@@ -24,9 +26,10 @@ public class FileEntity extends BaseEntity{
 
 	@Id @GeneratedValue
 	private Long fileNo;
-	@ManyToOne
+	@ToString.Exclude
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "boardNo")
-	private Board boardNo;
+	private Board board;
 	
 //	@Column(length=45, nullable= false)
 //	private String gid;

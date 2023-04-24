@@ -44,7 +44,7 @@ public class BoardController {
 	private final FileService fileService;
 	@GetMapping("/{boardType}/main_view")
 	public String mainView(@PathVariable String boardType,Model model,
-@RequestParam(required = false)	String searchKeyword,String order ,String radio,@PageableDefault(page= 0, size = 3, sort = "boardNo",direction = Sort.Direction.DESC)Pageable pageable ) {
+@RequestParam(required = false)	String searchKeyword,String order ,String radio,@PageableDefault(page= 0, size = 10, sort = "boardNo",direction = Sort.Direction.DESC)Pageable pageable ) {
 		
 //		if(searchRequest == null) {
 //			SearchRequest request = new SearchRequest();
@@ -98,9 +98,9 @@ public class BoardController {
 		System.out.println(boardNo);
 		Board board = boardService.getOneBoard(boardNo);
 		
-		List<FileEntity> fileList = fileService.getFilesByBoard(board);
+	//	List<FileEntity> fileList = fileService.getFilesByBoard(board);
 		model.addAttribute("addScript", new String[] {"board/board_main"});	
-		model.addAttribute("fileList", fileList);
+		model.addAttribute("fileList", board.getFiles());
 		model.addAttribute("board", board);
 		model.addAttribute("replies", board.getReplies()); //비동기식 화면수정을위해 댓글은 따로 모델에 속성추가
 		model.addAttribute("replyDto", replyDto);

@@ -98,15 +98,15 @@ public class ReplyService {
 	
 	
 	@Transactional
-	public boolean updateReply(ReplyDto dto,Long no) {
+	public void updateReply(ReplyDto dto,Long no) {
 		try {
 		Reply entity = this.findOneByReplyNo(no);
 		entity.setContent(dto.getContent());
 		
-		return true;
+		
 		
 		}catch (Exception e) {
-			return false;
+			
 		}
 	}
 

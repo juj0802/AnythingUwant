@@ -23,8 +23,9 @@ import com.querydsl.core.BooleanBuilder;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+
 @RequiredArgsConstructor
+@Service
 public class FileService {
 	
 	
@@ -49,7 +50,7 @@ public class FileService {
 					.fileName(fileName)
 					.savedName(savedName)
 					.path(path)
-					.boardNo(board)
+					.board(board)
 					.build();
 			entity = fileRepository.save(entity);
 			file.transferTo(new File(path));
@@ -58,10 +59,25 @@ public class FileService {
 		}
 	
 
-		
-			
 			
 		}
+	
+	
+		/*
+		 * List<MultipartFile> EntityToMultiPartFile(List<FileEntity> entities){
+		 * List<MultipartFile> list = new ArrayList<>();
+		 * 
+		 * for(FileEntity entity : entities) {
+		 * 
+		 * File file = new File(entity.getPath());
+		 * 
+		 * 
+		 * }
+		 * 
+		 * return null ; }
+		 */
+	
+	
 	public FileEntity getFileByNo(Long fileNo) throws FileNotFoundException {
 		
 		Optional<FileEntity> _entity = fileRepository.findById(fileNo);
@@ -77,7 +93,7 @@ public class FileService {
 		BooleanBuilder builder = new BooleanBuilder();
 		QFileEntity qfile = QFileEntity.fileEntity;
 		
-		builder.and(qfile.boardNo.eq(board));
+		builder.and(qfile.board.eq(board));
 		
 		
 		
