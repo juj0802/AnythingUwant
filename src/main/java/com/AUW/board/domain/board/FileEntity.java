@@ -1,6 +1,6 @@
-package com.AUW.board.domain;
+package com.AUW.board.domain.board;
 
-import com.AUW.board.domain.board.Board;
+import com.AUW.board.domain.BaseEntity;
 import com.AUW.board.dto.UserType;
 
 import jakarta.persistence.Column;

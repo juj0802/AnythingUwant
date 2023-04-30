@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="https://www.thymeleaf.org" xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
+ layout:decorate="~{layout/main_layout}">
+ 
+ <main layout:fragment="content">
+
+	 <div class="container mb-3">
+		  <h1>게시글 수정</h1>
+		 <div class="card box-shadow">
+		 <form th:action="@{/board_update/update/ps}" method="post" th:object="${boardDto}" enctype="multipart/form-data">
+			 <input th:if="*{boardNo}" type="hidden" name="boardNo" id="boardId" th:value="*{boardNo}">
+
+		
+			<table class="m-auto w-full">
+			
+			<tr>						
+				<td colspan="4" align="left">
+						
+					<input class="w-full form-control" type="text" name="title" placeholder="제목을 입력해 주세요" th:field="*{title}">
+						<div class="error" th:each="err : ${#fields.errors('title')}" th:text="${err}"></div>
+				</td>
+			</tr>
+		
+			<tr class="file p-2">
+				
+				<th class="text-center w-20">첨부 파일</th>
+				<td colspan="3" align="left">
+					<label for="files" class="w-full p-2 m-0 flex justify-center">
+						<span class="material-symbols-outlined">drive_folder_upload</span> &nbsp;&nbsp;파일선택 &nbsp;(첨부파일을 삭제할려면 x버튼을 두번 클릭해주세요)</label>
+					<input type="file" name="files" class="hidden" id="files" multiple="multiple" th:filed="*{files}" >
+		<div id="fileList" class="form-control">
+						
+						</div>
+				</td>
+				
+			</tr>
+			<tr>
+			
+				<td colspan="4"> 
+			
+					
+					<textarea rows="20" id="content" name="content" 
+						placeholder="내용을 입력해 주세요" th:field="*{content}">
+					</textarea>
+				<div class="error " th:each="err : ${#fields.errors('content')}" th:text="${err}"></div>
+				</td>
+				
+			</tr>
+		</table>
+		
+		
+			<div id="fileListArea">
+				   	<div th:if="${boardDto.fileList}" th:each=" file : ${boardDto.fileList} " class="file p-2">
+				
+						<a th:href="@{/board/attach(fileNo=${file.fileNo})}" th:id="${file.fileName}" th:text="${file.fileName}" onclick="return ask(this);" class="p-2"></a>
+						      <button th:value="${file.fileNo}" th:onclick="deleteFileEntity(this)"
+                       			 type="button" class="btn btn-outline-danger">삭제</button>
+					  </div>
+			</div>
+			
+			<div class="flex justify-center">
+			<button class="btn btn-primary btn-outline w-50 p-2" type="submit">완료</button>
+			<button class="btn btn-default btn-outline w-50 p-2" type="button" id="cancelBtn" th:value="${boardDto.boardNo}" onclick="cancelUpdate(this)">취소</button>
+			</div>
+		 </form>
+		 </div>
+	 </div>
+	 
+
+	 
+	 
+ </main>
+	
+</html>

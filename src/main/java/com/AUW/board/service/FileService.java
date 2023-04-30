@@ -14,13 +14,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.AUW.board.domain.FileEntity;
-import com.AUW.board.domain.QFileEntity;
+
 import com.AUW.board.domain.board.Board;
+import com.AUW.board.domain.board.FileEntity;
+import com.AUW.board.domain.board.QFileEntity;
 import com.AUW.board.repository.FileRepository;
 import com.querydsl.core.BooleanBuilder;
 
-
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 
@@ -63,27 +64,34 @@ public class FileService {
 		}
 	
 	
-		/*
-		 * List<MultipartFile> EntityToMultiPartFile(List<FileEntity> entities){
-		 * List<MultipartFile> list = new ArrayList<>();
-		 * 
-		 * for(FileEntity entity : entities) {
-		 * 
-		 * File file = new File(entity.getPath());
-		 * 
-		 * 
-		 * }
-		 * 
-		 * return null ; }
-		 */
 	
+		List<MultipartFile> EntityToMultiPartFile(List<FileEntity> entities){
+		List<MultipartFile> list = new ArrayList<>();
+
+		for(FileEntity entity : entities) {
+ 
+		  File file = new File(entity.getPath());
+		 
+		  
 	
+		 
+		
+		}
+	
+		return null; 
+		}
 	public FileEntity getFileByNo(Long fileNo) throws FileNotFoundException {
 		
 		Optional<FileEntity> _entity = fileRepository.findById(fileNo);
 		FileEntity entity = _entity.orElseThrow(()-> new FileNotFoundException("파일을 찾을수없습니다."));
 		
 		return entity;
+		
+	}
+	@Transactional
+	public void deleteFileEntity(FileEntity entity) {
+		
+		fileRepository.delete(entity);
 		
 	}
 	

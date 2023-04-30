@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.AUW.board.domain.User;
 import com.AUW.board.domain.board.Board;
+import com.AUW.board.domain.board.FileEntity;
 import com.AUW.board.domain.board.Reply;
 
 import jakarta.validation.constraints.NotBlank;
@@ -41,5 +42,5 @@ public class BoardDto {
 	private LocalDateTime modDt;
 	private List<ReplyDto> replies;
 	private List<MultipartFile> files;
-	
+	private List<FileEntity> fileList;
 }

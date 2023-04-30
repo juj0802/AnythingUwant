@@ -24,13 +24,16 @@ import org.springframework.web.util.UriUtils;
 
 import com.AUW.board.config.auth.PrincipalDetail;
 import com.AUW.board.controller.user.SignValidator;
-import com.AUW.board.domain.FileEntity;
+import com.AUW.board.domain.UidEntity;
 import com.AUW.board.domain.board.Board;
+import com.AUW.board.domain.board.FileEntity;
 import com.AUW.board.dto.BoardType;
 import com.AUW.board.dto.ReplyDto;
 import com.AUW.board.dto.SearchRequest;
+import com.AUW.board.dto.UidDto;
 import com.AUW.board.service.BoardService;
 import com.AUW.board.service.FileService;
+import com.AUW.board.service.UidService;
 import com.AUW.board.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -42,26 +45,21 @@ public class BoardController {
 
 	private final BoardService boardService;
 	private final FileService fileService;
+	private final UidService uidService;
+	
 	@GetMapping("/{boardType}/main_view")
 	public String mainView(@PathVariable String boardType,Model model,
-@RequestParam(required = false)	String searchKeyword,String order ,String radio,@PageableDefault(page= 0, size = 10, sort = "boardNo",direction = Sort.Direction.DESC)Pageable pageable ) {
+String searchKeyword,String order ,String radio,@PageableDefault(page= 0, size = 3,sort = "boardNo", direction = Sort.Direction.DESC)Pageable pageable ) {
 		
-//		if(searchRequest == null) {
-//			SearchRequest request = new SearchRequest();
-//			model.addAttribute("searchRequest", request);
-//		}else {
-//			model.addAttribute("searchRequest", searchRequest);
-//			System.out.println("테스트123");
-//			System.out.println(searchRequest);
-//		}
-		
-		//@PageableDefault(page= 0, size = 3, sort = "boardNo",direction = Sort.Direction.DESC)Pageable pageable,
-//		int nowPage = list.getPageable().getPageNumber() + 1; // pageable 0부터 시작하기때문에 +1 해준다
-//		int startPage = Math.max(nowPage - 4, 1); // 둘중 큰거 반환함.
-//		int endPage = Math.min(nowPage + 5, list.getTotalPages());
 
+		Page<Board> list = null;
+		if(order != null) {
 		
-		Page<Board> list = boardService.findAllBoard(boardType, pageable);
+			list = boardService.findAllBoardBy(searchKeyword, order, radio, pageable, boardType);
+		}else {
+			list = boardService.findAllBoard(boardType, pageable);
+		}
+			
 		
 		int nowPage = list.getPageable().getPageNumber() + 1; // pageable 0부터 시작하기때문에 +1 해준다
 		int startPage = Math.max(nowPage - 4, 1); // 둘중 큰거 반환함.
@@ -89,16 +87,31 @@ public class BoardController {
 	@GetMapping("/board_view")
 	public String boardView(@RequestParam(required = true) Long boardNo,@AuthenticationPrincipal PrincipalDetail principalDetail,Model model) {
 		ReplyDto replyDto = new ReplyDto();
+		Long userNo = null;
 		if(principalDetail != null) { 
 			model.addAttribute("user", principalDetail.getUsername());
 			replyDto.setUserId(principalDetail.getUsername());
 			replyDto.setNickNm(principalDetail.getUser().getNickNm());
+			//로그인 유저의 추천 클릭 목록
+			userNo = principalDetail.getUser().getUserNo();
+			UidEntity uidEntity = uidService.getOneUid("liked", boardNo, userNo);
+			if(uidEntity != null) {
+				UidDto like = uidService.entityToDto(uidEntity);
+				model.addAttribute("like", like);
+			}
 		}
-		
+		//조회수
+		String readUid = uidService.getUid(boardNo, userNo);
+		uidService.hitProcess(readUid, "readHit");
 		System.out.println(boardNo);
 		Board board = boardService.getOneBoard(boardNo);
 		
-	//	List<FileEntity> fileList = fileService.getFilesByBoard(board);
+		
+		
+		//조회수
+		
+		
+		
 		model.addAttribute("addScript", new String[] {"board/board_main"});	
 		model.addAttribute("fileList", board.getFiles());
 		model.addAttribute("board", board);

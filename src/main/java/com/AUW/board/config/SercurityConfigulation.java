@@ -36,7 +36,7 @@ public class SercurityConfigulation {
         http.csrf().disable().cors().disable()
                 .authorizeHttpRequests(request -> request
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/board_write/**").authenticated() //인증이 필요한 경로
+                        .requestMatchers("/board_write/**","board_delete/**","board_update/**").authenticated() //인증이 필요한 경로
                         .requestMatchers("/myPage/**").hasAnyRole("USER","ADMIN") // myPage로 오는 경로는 권한체크
                         .requestMatchers("/admin/**").hasRole("ADMIN") // admin으로 오는 경로는 권한체크
                         .anyRequest().permitAll() //그외 나머지 경로는 인증 불필요

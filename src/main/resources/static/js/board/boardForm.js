@@ -32,6 +32,33 @@ backspace
 	
 });
 
+function cancelUpdate(item){
+	const boardNo = item.value;
+	let url = `/board/board_view?boardNo=${boardNo}`;
+	location.href = url;
+}
+
+function deleteFileEntity(item){
+	console.log(item);
+	const fileNo = item.value;
+	let url = `/deleteFile?fileNo=${fileNo}`;
+	
+	  const xhr = new XMLHttpRequest();
+	  xhr.open("GET",url);
+	  xhr.onreadystatechange = function(){
+		if(xhr.status == 200 && xhr.readyState == XMLHttpRequest.DONE){
+			
+			$("#fileListArea").replaceWith(xhr.responseText);
+		
+			
+		}  
+	  };
+	   xhr.onerror = function(err){
+		  console.log(err);
+	  };
+	  
+	  xhr.send();
+}
 
 function deleteAttach(itemName){
 

@@ -1,8 +1,78 @@
 
+window.addEventListener("DOMContentLoaded",function(){
+	
+	/*클릭한 좋아요 상태처리 */
+	const uidEl = document.getElementById("uid");
+	if(uidEl){
+		document.getElementsByClassName("toggleLiked")[0].className = "fa-solid fa-heart toggleLiked on";
+	}
+	
+	/*좋아요 토글 처리 */
+	const toggleLikedEls = document.getElementsByClassName("toggleLiked");
+	
+	for(const el of toggleLikedEls){
+		el.addEventListener("click",function(){
+			try{
+				const classList = this.classList;
+				if(classList.contains("login_required")){
+				throw new Error("로그인 후 이용가능합니다.");	
+				}
+				console.log(classList);
+				const boardNo = document.getElementById("boardNo").value;
+				const uidEl = document.getElementById("uid");
+				const uid = uidEl? uidEl.value : "";
+				const liked = classList.contains("on");
+				const url = `/liked?boardNo=${boardNo}&uid=${uid}`;
+				
+				const xhr = new XMLHttpRequest();
+				xhr.open("GET", url);
+				
+				xhr.onreadystatechange = function(){
+						if (xhr.status == 200 && xhr.readyState == XMLHttpRequest.DONE) {
+						const result = JSON.parse(xhr.responseText);
+						console.log(result);
+						if(!result.success){
+							alert("에러발생! 다시 시도해주세요");
+							return;
+						}
+						if(liked){
+								el.className = "fa-solid fa-heart toggleLiked";
+								classList.add("on");
+						}else{
+								el.className = "fa-regular fa-heart toggleLiked";
+								classList.remove("on");
+						}
+						document.getElementById("totalLikes").innerText = `추천수 : ` + result.data;
+					
+					
+				}
+				
+				};
+				xhr.send();
+				
+			} catch(error){
+				alert(error.message);
+			}
+		});
+	}
+		
+});
+
+
+
+
+
+
 function moveToWrite(no){ //게시판 수정화면으로 이동하는 함수
 	
 	const boardNo = no.value;
-	const url = `/board_write/update/${boardNo}`;
+	const url = `/board_update/update/${boardNo}`;
+	location.href = url;
+}
+
+function moveToDelete(no){
+	const boardNo = no.value;
+	const url = `/board_delete/delete/${boardNo}`;
 	location.href = url;
 }
 

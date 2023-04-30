@@ -8,7 +8,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import com.AUW.board.domain.BaseEntity;
-import com.AUW.board.domain.FileEntity;
 import com.AUW.board.domain.User;
 import com.AUW.board.dto.BoardType;
 import com.AUW.board.dto.UserType;
@@ -80,7 +79,9 @@ public class Board extends BaseEntity{//게시판 엔티티
 	@ColumnDefault("0")
 	private Integer totalLikes = 0;//총 추천수
 	
-	
+	@Column(nullable=false, columnDefinition="char(1) default 'N'", insertable=false)
+	private String deleteYn; 	//삭제여부
+
 	
 	
 	

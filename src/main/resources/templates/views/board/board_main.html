@@ -12,15 +12,20 @@
         
 	  <div class="funkyradio">				
 	  <div class="funkyradio-primary">
-            <input type="radio" name="radio" id="radio1" value="regDt" th:checked="${radio != 'liked'}"/>
+            <input type="radio" name="radio" id="radio1" value="regDt" th:checked="${radio == 'regDt'|| radio == null}"/>
             <label for="radio1">최신순</label>
         </div>
         
           <div class="funkyradio-primary">
-            <input type="radio" name="radio"  id="radio2" value="liked" th:checked="${radio == 'liked'}" />
+            <input type="radio" name="radio"  id="radio2" value="totalLikes" th:checked="${radio == 'totalLikes'}" />
             <label for="radio2">좋아요순</label>
         </div>
-   
+   		
+   		  
+          <div class="funkyradio-primary">
+            <input type="radio" name="radio"  id="radio3" value="boardHit" th:checked="${radio == 'boardHit'}" />
+            <label for="radio3">조회순</label>
+        </div>
      
 
       
@@ -35,7 +40,7 @@
         
         <div class="flex">
                     <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
-                    <input class="form-control w-85" id="system-search" name="searchKeyword" placeholder="Search for" th:value="${searchKeyword}" required>
+                    <input class="form-control w-85" id="system-search" name="searchKeyword" placeholder="제목 검색" th:value="${searchKeyword}">
                     
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
@@ -87,7 +92,7 @@
                 <div class="text-center mt-10">
            <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
 		<a th:if="${page != nowPage and page>0}"
-			th:href="@{/board/{boardType}/main_view(boardType=${boardType}, page = ${page - 1}, searchKeyword = ${searchKeyword})}"
+			th:href="@{/board/{boardType}/main_view(boardType=${boardType}, page = ${page - 1},order = ${order},radio=${radio}, searchKeyword = ${searchKeyword})}"
 			th:text="${page}"></a>
 		<strong class="bold" th:if="${page == nowPage}" th:text="${page}"></strong>
 	</th:block>

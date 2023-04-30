@@ -21,12 +21,15 @@
 						
 						<div class="gap p-2">
 						<a class="mr-1" href="#" th:text="|닉네임 : *{user.nickNm}|"></a>
-						<span th:text="|작성일 : *{#temporals.format(regDt, 'yyyy-MM-dd HH:mm')}|"></span>
+						<span th:text="|작성일 : *{#temporals.format(regDt, 'yyyy-MM-dd HH:mm')}|"></span>&nbsp&nbsp&nbsp&nbsp
+						<span th:if="*{modDt}" th:text="|수정됨 : *{#temporals.format(modDt, 'yyyy-MM-dd HH:mm')}|"></span>
 						</div>						
 						
 						<div class="gap p-2">
 							<span class="mr-1" th:text="|조회수 : *{boardHit}|"></span>
-							<span th:text="|추천수 : *{totalLikes}|"></span>
+							<input th:if="${like}" type="hidden" id="uid" th:value="${like.uid}">
+							<i class="fa-regular fa-heart toggleLiked" th:classappend="${user == null }? 'login_required' : ''"></i>
+							<span id="totalLikes" th:text="|추천수 : *{totalLikes}|"></span>
 						</div>
 						
 						
@@ -54,7 +57,7 @@
 						<th:block sec:authorize="isAuthenticated()">
 							<div th:if="${board.user.userId}==${user}" class="flex w-75 m-auto justify-center">
 								<button type="button" th:value="${board.boardNo}" class="btn btn-default w-50" onclick=" moveToWrite(this) ">수정</button>
-								<button type="button" th:value="${board.boardNo}" class="btn btn-labeled btn-danger w-50">삭제</button>
+								<button type="button" th:value="${board.boardNo}" class="btn btn-labeled btn-danger w-50"onclick=" moveToDelete(this) ">삭제</button>
 							</div>
 							
 							
