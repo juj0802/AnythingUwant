@@ -28,15 +28,13 @@ public class LikedController {
 		String field = "liked";
 		
 		uid = uid=="" ? uidService.getUid(boardNo, boardNo) : uid;
-		System.out.println("테스트 uid");
-		System.out.println(uid);
+
 		totalLikes = uidService.likeProcess(uid, field);
 		
 		JsonResult<Object> result = new JsonResult<>();
 		result.setSuccess(true);
 		result.setData(totalLikes);
-		System.out.println("json테스트");
-		System.out.println(result);
+
 		return result;
 		
 	}catch(Exception e) {

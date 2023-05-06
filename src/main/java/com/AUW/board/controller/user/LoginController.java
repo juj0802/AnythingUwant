@@ -1,6 +1,9 @@
 package com.AUW.board.controller.user;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +24,8 @@ public class LoginController {
 	public String login(@RequestParam(value="error", required=false) String error,
 			@RequestParam(value="exception", required=false) String exception
 			, Model model) {
+		
+	
 		
 		model.addAttribute("addScript", new String[] {"user/login"});
 		model.addAttribute("addCss", new String[] {"bootstrap/signin"});

@@ -1,15 +1,19 @@
 package com.AUW.board.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.AUW.board.domain.QUidEntity;
 import com.AUW.board.domain.UidEntity;
 import com.AUW.board.domain.board.Board;
 import com.AUW.board.dto.UidDto;
 import com.AUW.board.repository.BoardRepository;
 import com.AUW.board.repository.ReplyRepository;
 import com.AUW.board.repository.UidRepository;
+import com.querydsl.core.BooleanBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -41,12 +45,15 @@ public class UidService {
 		
 	}
 	
+	
 	@Transactional
 	public int likeProcess(String uid, String field) {
 		//중복확인후 없으면 db등록, 있으면 삭제
-	UidEntity uidEntity = uidRepository.findByFieldAndUid(field, uid).orElse(null);
-		System.out.println("테스트 필드");
-		System.out.println(field);
+		BooleanBuilder builder = new BooleanBuilder();
+		QUidEntity quid = QUidEntity.uidEntity;
+
+		UidEntity uidEntity = uidRepository.findByFieldAndUid(field, uid).orElse(null);
+		
 		try {
 			if(uidEntity==null) {
 				
@@ -62,15 +69,14 @@ public class UidService {
 		}
 		
 		Long boardNo = Long.parseLong(uid.split("_")[0]);
+		String test = ""+boardNo+"_";
+		builder.and(quid.field.eq(field));
+		builder.and(quid.uid.contains(test));
 		
-		int totalLikes = uidRepository.countByUid(field, boardNo);
-		System.out.println("테스트 조항요");
-		System.out.println(boardNo);
-		System.out.println(field);
-		System.out.println(totalLikes);
-		
+		List<UidEntity> list = (List<UidEntity>) uidRepository.findAll(builder);
+		int totalLikes = list.size();
+	
 		boardRepository.updateTotalLikes(totalLikes, boardNo);
-		
 		return totalLikes;
 				
 	}

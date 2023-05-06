@@ -21,7 +21,7 @@ window.addEventListener("DOMContentLoaded",function(){
 				const boardNo = document.getElementById("boardNo").value;
 				const uidEl = document.getElementById("uid");
 				const uid = uidEl? uidEl.value : "";
-				const liked = classList.contains("on");
+				const liked = classList.contains("on") ? false : true;
 				const url = `/liked?boardNo=${boardNo}&uid=${uid}`;
 				
 				const xhr = new XMLHttpRequest();

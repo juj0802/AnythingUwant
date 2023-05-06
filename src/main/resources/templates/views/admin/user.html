@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/main_layout}">
+	
+	<main layout:fragment="content">
+		
+	<div class="container-fluid main-container">
+  		<div class="col-md-2 sidebar">
+  			<div class="row">
+	<!-- uncomment code for absolute positioning tweek see top comment in css -->
+	<div class="absolute-wrapper"> </div>
+	<!-- Menu -->
+	<div class="side-menu">
+		<nav class="navbar navbar-default" role="navigation">
+			<!-- Main Menu -->
+			<div class="side-menu-container">
+				<ul class="nav navbar-nav">
+					<li class="active"><a th:href="@{/admin/main}"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+					<li><a th:href="@{/admin/user}"><span class="glyphicon glyphicon-user"></span> 회원관리</a></li>
+					<li><a th:href="@{/admin/boards}"><span class="glyphicon glyphicon-cloud"></span> 게시물 관리</a></li>
+
+					
+
+				
+
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</nav>
+
+	</div>
+</div>  		</div>
+  		<div class="col-md-10 content">
+  			  <div class="panel panel-default">
+	<div class="panel-heading">
+		회원관리
+	</div>
+	<div class="panel-body">
+				
+				
+					
+		
+					 <div class="card mb-5">
+        
+            <div class="card-block p-0">
+                <table class="table table-bordered table-sm m-0">
+                    <thead class="">
+                        <tr>
+                            <th>
+								<label class="pointer">
+								<input class="custom-control-input hidden" type='checkbox' onclick='selectAll(this)'/> 
+								전체 선택 및 해제
+								</label>
+							</th>
+								
+                            <th>아이디</th>
+                            <th>휴대폰 번호</th>
+                            <th>이메일</th>
+                            <th>닉네임</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+						<form th:action="@{/admin/user}" method="post" >
+                        <tr th:if="${list}" th:each=" user : ${list}">
+                            <td>
+                                <label class="custom-control custom-checkbox">
+                                    <input type="checkbox" name="nums" class="custom-control-input hidden" th:value="${user.userNo}">
+                                    <span class="custom-control-indicator"></span>
+                                </label>
+                            </td>
+                            <td th:text="${user.userId}"></td>
+                            <td th:text="${user.phone}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.nickNm}"></td>
+                        </tr>
+                   
+                    
+                    </tbody>
+                </table>
+            </div>
+            </div>
+						<button class="btn btn-danger">삭제</button>
+					</form>
+					
+		
+	</div>	
+				<form th:action="@{/admin/user}" method="get">
+	 			    <div class="flex">
+                    <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
+                    <input class="form-control w-95" id="system-search" name="searchKeyword" placeholder="닉네임 검색" th:value="${searchKeyword}">
+                    
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default "><i class="glyphicon glyphicon-search"></i></button>
+                    </span>
+        </div> 
+                </form>    
+</div>
+  		</div>
+  	   <div class="text-center mt-10">
+           <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+		<a th:if="${page != nowPage and page>0}"
+			th:href="@{/admin/user(page = ${page - 1},searchKeyword = ${searchKeyword})}"
+			th:text="${page}"></a>
+		<strong class="bold" th:if="${page == nowPage}" th:text="${page}"></strong>
+	</th:block>
+             </div>   
+  	</div>
+	</main>
+	
+	
+</html>

@@ -38,17 +38,20 @@ public class BoardService {
 
 		QBoard board = QBoard.board;
 		BoardType type = this.translateBoardType(boardType);
-		builder.and(board.boardType.eq(type));
-		builder.and(board.deleteYn.eq("N"));
-		//Sort sort = Sort.by(Sort.Order.desc("boardNo"));
+		if(type == BoardType.LIKEBOARD) { //추천게시판은 추천수 10개이상
+			builder.and(board.totalLikes.goe(10));
+		}else {
+			builder.and(board.boardType.eq(type));
+		}
 		
-		//pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+		builder.and(board.deleteYn.eq("N"));
+
 	
 		Page<Board> page = boardRepository.findAll(builder, pageable);
 		
 		return page;
 	}
-	public Page<Board> findAllBoardBy(String searchKeyword,String order ,String radio,Pageable pageable,String boardType){
+	public Page<Board> findAllBoardBy(String searchKeyword,String order ,String radio,Pageable pageable,String boardType,String category){
 		Sort sort = null;
 	
 		/*
@@ -73,10 +76,22 @@ public class BoardService {
 
 		QBoard board = QBoard.board;
 		BoardType type = this.translateBoardType(boardType);
-		builder.and(board.boardType.eq(type));
+		if(type == BoardType.LIKEBOARD) {
+			builder.and(board.totalLikes.goe(10));
+		}else {
+			builder.and(board.boardType.eq(type));
+		}
+		
 		builder.and(board.deleteYn.eq("N"));
+		
 		if(!searchKeyword.isBlank()) {
-			builder.and(board.title.contains(searchKeyword));
+			if(category.length()==6) {
+				builder.and(board.user.nickNm.contains(searchKeyword));
+		
+			}else {
+				builder.and(board.title.contains(searchKeyword));	
+			}
+			
 		}
 	
 	pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),sort);
@@ -84,16 +99,56 @@ public class BoardService {
 
 		return page;
 	}
+	
+	public Page<Board> findAllForAdmin(Pageable pageable){
 
+		Page<Board> page = boardRepository.findAll(pageable);
+		
+		return page;
+	}
+	public Page<Board> findAllForAdmin(Pageable pageable,String searchKeyword){
+		BooleanBuilder builder = new BooleanBuilder();
+
+		QBoard board = QBoard.board;
+		builder.and(board.title.contains(searchKeyword));
+		Page<Board> page = boardRepository.findAll(builder,pageable);
+		
+		return page;
+	}
+	
 	public Board getOneBoard(Long boardNo) {
 
 		Optional<Board> _entity = boardRepository.findById(boardNo);
 		Board board = _entity.orElseThrow(() -> new RuntimeException("게시글을 찾을수없습니다."));
 		if (board.getDeleteYn() == "Y") {
+			
 			throw new RuntimeException("삭제된 게시글입니다.");
 		}
 
 		return board;
+	}
+	public Board boardForAdmin(Long boardNo) {
+		Optional<Board> _entity = boardRepository.findById(boardNo);
+		Board board = _entity.orElseThrow(() -> new RuntimeException("게시글을 찾을수없습니다."));
+		
+
+		return board;
+	}
+	
+	//추천게시판용 page객체 
+	//추천 10개이상 받으면 추천게시판에 표시된다
+	
+	public Page<Board> findAllbyLiked(Pageable pageable){
+		BooleanBuilder builder = new BooleanBuilder();
+
+		QBoard board = QBoard.board;
+		
+		builder.and(board.totalLikes.goe(10));
+		
+		Page<Board> list = boardRepository.findAll(builder,pageable);
+		
+		return list;
+		
 	}
 
 	public Board insertBoard(BoardDto dto, User user) {
@@ -131,7 +186,27 @@ public class BoardService {
 
 		return board;
 	}
+	
+	
+	public List<Board> findByUserNo(Long no){
+		BooleanBuilder builder = new BooleanBuilder();
 
+		QBoard board = QBoard.board;
+		builder.and(board.user.userNo.eq(no));
+		
+		
+		List<Board> list = (List<Board>) boardRepository.findAll(builder);
+		
+		return list;
+	}
+	
+	//관리자는 db에서 게시물 삭제가능
+	public void deleteBoardForAdmin(Long no) {
+		
+		Board board = this.boardForAdmin(no);
+		boardRepository.delete(board);
+	}
+	
 	@Transactional
 	public void updateReplies(Board board, Reply reply) {
 

@@ -1,5 +1,6 @@
 package com.AUW.board.controller.user;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -24,6 +25,7 @@ public class SignUpController {
 	private final SignValidator signValidator;
 	@GetMapping("/sign_up")
 	public String signup(Model model) {
+		
 		UserDto userDto = new UserDto();
 		model.addAttribute("userDto", userDto);
 		model.addAttribute("addScript", new String[] {"user/signUp"});
@@ -33,7 +35,7 @@ public class SignUpController {
 	@PostMapping("/sign_up_Ps")//회원가입 로직 수행
 	public String signUpPs(@Valid UserDto userDto,Errors errors,Model model) {
 	
-		System.out.println(userDto);
+		
 		signValidator.validate(userDto, errors);
 		
 		if(errors.hasErrors()) {
@@ -41,7 +43,7 @@ public class SignUpController {
 			model.addAttribute("userDto", userDto);
 			model.addAttribute("addScript", new String[] {"user/signUp"});
 			
-			System.out.println(errors.getAllErrors());
+			
 			return "user/sign_up";
 		}
 		User user = userService.insertUser(userDto);

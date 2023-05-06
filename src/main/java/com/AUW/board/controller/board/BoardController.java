@@ -31,6 +31,7 @@ import com.AUW.board.dto.BoardType;
 import com.AUW.board.dto.ReplyDto;
 import com.AUW.board.dto.SearchRequest;
 import com.AUW.board.dto.UidDto;
+import com.AUW.board.dto.UserType;
 import com.AUW.board.service.BoardService;
 import com.AUW.board.service.FileService;
 import com.AUW.board.service.UidService;
@@ -48,14 +49,20 @@ public class BoardController {
 	private final UidService uidService;
 	
 	@GetMapping("/{boardType}/main_view")
-	public String mainView(@PathVariable String boardType,Model model,
-String searchKeyword,String order ,String radio,@PageableDefault(page= 0, size = 3,sort = "boardNo", direction = Sort.Direction.DESC)Pageable pageable ) {
-		
-
+	public String mainView(@PathVariable String boardType,@AuthenticationPrincipal PrincipalDetail principalDetail,Model model,
+String searchKeyword,String order ,String radio,String category,@PageableDefault(page= 0, size = 10,sort = "boardNo", direction = Sort.Direction.DESC)Pageable pageable ) {
+			
+		if(principalDetail != null) {
+			
+			if(principalDetail.getUser().getUserType() == UserType.ADMIN) {
+				model.addAttribute("admin", "admin");
+			}
+		}
 		Page<Board> list = null;
+	
 		if(order != null) {
 		
-			list = boardService.findAllBoardBy(searchKeyword, order, radio, pageable, boardType);
+			list = boardService.findAllBoardBy(searchKeyword, order, radio, pageable, boardType,category);
 		}else {
 			list = boardService.findAllBoard(boardType, pageable);
 		}
@@ -74,6 +81,7 @@ String searchKeyword,String order ,String radio,@PageableDefault(page= 0, size =
 		model.addAttribute("order",order);
 		model.addAttribute("radio", radio);
 		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("category", category);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("addScript", new String[] {"board/board_main"});	

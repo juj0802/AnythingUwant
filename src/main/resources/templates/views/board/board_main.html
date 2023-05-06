@@ -18,7 +18,7 @@
         
           <div class="funkyradio-primary">
             <input type="radio" name="radio"  id="radio2" value="totalLikes" th:checked="${radio == 'totalLikes'}" />
-            <label for="radio2">좋아요순</label>
+            <label for="radio2">추천순</label>
         </div>
    		
    		  
@@ -36,11 +36,16 @@
   <option value="desc" th:selected="${order} != 'asc' ">내림차순</option>
 
 </select>
+	<select class="form-select form-select-lg mb-3 form-control" aria-label=".form-select-lg example" name="category">
+  
+  <option value="writer" th:selected="${category} == 'writer' ">작성자</option>
+  <option value="title" th:selected="${category} != 'writer' ">제목</option>
 
+</select>
         
         <div class="flex">
                     <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
-                    <input class="form-control w-85" id="system-search" name="searchKeyword" placeholder="제목 검색" th:value="${searchKeyword}">
+                    <input class="w-85 form-control"  name="searchKeyword" placeholder="제목 검색" th:value="${searchKeyword}">
                     
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
@@ -52,7 +57,11 @@
 		<div class="col-md-9">
 			
 			<a th:href="@{/board_write/{boardType}(boardType=${boardType})}" class="flex-row-reverse">
-				  <button type="button" class="btn btn-primary">작성하기</button>
+				<th:block th:if="${admin == null}">
+				  <button th:if="${boardType=='FREE_BOARD' || boardType=='QUERY_BOARD'}" type="button" class="btn btn-primary">작성하기</button>
+				</th:block>
+				  <button th:if="${admin != null}" type="button" class="btn btn-primary">작성하기</button>
+				
 			</a>
 			
     	 <table class="table table-list-search">
@@ -92,7 +101,7 @@
                 <div class="text-center mt-10">
            <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
 		<a th:if="${page != nowPage and page>0}"
-			th:href="@{/board/{boardType}/main_view(boardType=${boardType}, page = ${page - 1},order = ${order},radio=${radio}, searchKeyword = ${searchKeyword})}"
+			th:href="@{/board/{boardType}/main_view(boardType=${boardType}, page = ${page - 1},order = ${order},radio=${radio},category=${category}, searchKeyword = ${searchKeyword})}"
 			th:text="${page}"></a>
 		<strong class="bold" th:if="${page == nowPage}" th:text="${page}"></strong>
 	</th:block>

@@ -19,6 +19,7 @@ import com.AUW.board.domain.User;
 import com.AUW.board.domain.board.Board;
 import com.AUW.board.dto.BoardDto;
 import com.AUW.board.dto.BoardType;
+import com.AUW.board.dto.UserType;
 import com.AUW.board.service.BoardService;
 import com.AUW.board.service.FileService;
 
@@ -34,6 +35,15 @@ public class BoardWriteController {
 	@GetMapping("/{boardType}")
 	public String boardWrite(@PathVariable String boardType,@AuthenticationPrincipal PrincipalDetail principalDetail,Model model) {
 		
+		if(boardType == "NOTICE") {//공지사항은 관리자만 작성가능
+			if(principalDetail.getUser().getUserType() != UserType.ADMIN) {
+				throw new RuntimeException("유효하지않은 접근입니다.");
+			}
+			
+		}
+		if(boardType == "LIKED_BOARD") {//추천게시판은 작성이 불가능
+			throw new RuntimeException("유효하지않은 접근입니다");
+		}
 		BoardDto boardDto = new BoardDto();
 		boardDto.setBoardType(boardType);
 		

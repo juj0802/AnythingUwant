@@ -3,7 +3,45 @@
 	layout:decorate="~{layout/main_layout}">
 	
 	<main layout:fragment="content">
-		관리자페이지
+		
+	<div class="container-fluid main-container">
+  		<div class="col-md-2 sidebar">
+  			<div class="row">
+	<!-- uncomment code for absolute positioning tweek see top comment in css -->
+	<div class="absolute-wrapper"> </div>
+	<!-- Menu -->
+	<div class="side-menu">
+		<nav class="navbar navbar-default" role="navigation">
+			<!-- Main Menu -->
+			<div class="side-menu-container">
+				<ul class="nav navbar-nav">
+					<li class="active"><a th:href="@{/admin/main}"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+					<li><a th:href="@{/admin/user}"><span class="glyphicon glyphicon-user"></span> 회원관리</a></li>
+					<li><a th:href="@{/admin/boards}"><span class="glyphicon glyphicon-cloud"></span> 게시물 관리</a></li>
+
+					
+
+				
+
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</nav>
+
+	</div>
+</div>  		</div>
+  		<div class="col-md-10 content">
+  			  <div class="panel panel-default">
+	<div class="panel-heading">
+		Dashboard
+	</div>
+	<div class="panel-body">
+		관리자 전용 페이지입니다. <br>
+		회원 및 게시물 삭제기능을 갖고있습니다.
+	</div>
+</div>
+  		</div>
+  	
+  	</div>
 	</main>
 	
 	
